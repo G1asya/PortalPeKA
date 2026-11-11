@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Portal PeKA Aksi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        bank: {
+                            blue: '#1E3A8A', // Trustworthy banking blue
+                            light: '#3B82F6',
+                        },
+                        alert: {
+                            red: '#EF4444',
+                            light: '#FEE2E2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        
+        .app-container {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            max-height: 100vh;
+            background-color: #f9fafb;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        @media (min-width: 640px) {
+            .app-container {
+                height: 850px;
+                max-height: 90vh;
+                border-radius: 2rem;
+                border: 8px solid #1f2937;
+            }
+        }
+
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .tab-content { display: none; animation: fadeIn 0.2s ease-in-out; }
+        .tab-content.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <div class="app-container">
+        
+        <!-- Header Global -->
+        <header class="bg-bank-blue text-white pt-10 pb-6 px-6 rounded-b-[2rem] shadow-md z-10 shrink-0 relative">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Portal PeKA Aksi
+                    </h1>
+                    <p class="text-blue-200 text-xs mt-1 font-medium">Peduli, Kenali, Adukan (Bank Indonesia)</p>
+                </div>
+                <button onclick="openAdminLogin()" class="w-10 h-10 rounded-full border-2 border-white/20 shadow-sm flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors" title="Akses Admin">
+                    <i class="fa-solid fa-user-shield"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto hide-scroll p-6 pb-24 relative bg-gray-50">
+            
+            <!-- TAB 1: BERANDA -->
+            <section id="tab-beranda" class="tab-content active space-y-6">
+                
+                <!-- Hero Banner -->
+                <div class="bg-gradient-to-r from-bank-blue to-bank-light rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 opacity-10">
+                        <i class="fa-solid fa-qrcode text-9xl"></i>
+                    </div>
+                    <h2 class="text-lg font-bold leading-tight mb-2 relative z-10">"Satu Langkah Lebih Peka, Selangkah Lebih Aman."</h2>
+                    <p class="text-xs text-blue-100 relative z-10">Cek keamanan merchant sebelum bertransaksi digital.</p>
+                </div>
+
+                <!-- Feature A: Cek & Ricek Merchant -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-gray-800 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass text-bank-blue"></i> Cek & Ricek Merchant
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-4">Verifikasi nama merchant QRIS sebelum memasukkan PIN.</p>
+                    
+                    <div class="flex gap-2">
+                        <input type="text" id="cek-input" placeholder="Masukkan Nama Merchant..." class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-bank-blue focus:ring-1 focus:ring-bank-blue transition-all">
+                        <button onclick="cekMerchant()" class="bg-bank-blue hover:bg-blue-900 text-white px-5 py-3 rounded-xl font-semibold transition-colors shadow-md">
+                            Cek
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feature B: P3K Finansial -->
+                <button onclick="openModal('p3k-modal')" class="w-full bg-alert-red hover:bg-red-600 text-white rounded-2xl p-5 shadow-lg shadow-red-500/30 flex items-center justify-between transition-transform active:scale-95 group">
+                    <div class="flex items-center gap-4 text-left">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-truck-medical text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">P3K Finansial</h3>
+                            <p class="text-xs text-red-100 mt-0.5">Pertolongan Pertama Penipuan</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right opacity-70"></i>
+                </button>
+            </section>
+
+            <!-- TAB 2: LAPOR -->
+            <section id="tab-lapor" class="tab-content space-y-5">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Form Pengaduan QRIS</h2>
+                    <p class="text-sm text-gray-500 mt-1">Laporkan penyalahgunaan QRIS atau merchant mencurigakan.</p>
+                </div>
+
+                <form id="lapor-form" class="space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-100" onsubmit="submitReport(event)">
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Nama Merchant (Sesuai Layar) <span class="text-alert-red">*</span></label>
+                        <input type="text" id="lapor-merchant" required placeholder="Contoh: PESUGIHAN ONLINE" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-bank-blue transition-all uppercase font-mono">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Kategori Indikasi <span class="text-alert-red">*</span></label>
+                        <div class="relative">
+                            <select id="lapor-kategori" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm appearance-none focus:outline-none focus:border-bank-blue transition-all">
+                                <option value="" disabled selected>Pilih Kategori...</option>
+                                <option value="Judi Online">Judi Online</option>
+                                <option value="Penipuan / Scam">Penipuan / Scam</option>
+                                <option value="Phishing">Phishing / Tautan Palsu</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Kronologi Singkat <span class="text-alert-red">*</span></label>
+                        <textarea id="lapor-kronologi" required rows="3" placeholder="Ceritakan bagaimana Anda menemukan kecurigaan ini..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-bank-blue transition-all resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-bank-blue hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2 mt-4">
+                        Kirim Laporan <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- TAB 3: RADAR -->
+            <section id="tab-radar" class="tab-content space-y-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">PeKA Radar</h2>
+                        <p class="text-sm text-gray-500 mt-1">Pantauan Terkini Laporan Masyarakat</p>
+                    </div>
+                    <span class="flex items-center gap-1 text-[10px] font-bold text-alert-red bg-alert-light px-2 py-1 rounded-full border border-red-200">
+                        <span class="w-2 h-2 rounded-full bg-alert-red animate-pulse"></span>
+                        LIVE
+                    </span>
+                </div>
+
+                <!-- Radar Feed List -->
+                <div id="radar-feed" class="space-y-3">
+                    <!-- Injected by JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center px-2 py-3 z-40 pb-6 rounded-b-[2rem] sm:pb-3">
+            <button onclick="switchTab('beranda', this)" class="nav-btn flex flex-col items-center gap-1 p-2 w-20 text-bank-blue">
+                <i class="fa-solid fa-house text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">Beranda</span>
+            </button>
+            <button onclick="switchTab('lapor', this)" class="nav-btn flex flex-col items-center gap-1 p-2 w-20 text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fa-solid fa-bullhorn text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">Lapor</span>
+            </button>
+            <button onclick="switchTab('radar', this)" class="nav-btn flex flex-col items-center gap-1 p-2 w-20 text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fa-solid fa-satellite-dish text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">Radar</span>
+            </button>
+        </nav>
+
+        <!-- ADMIN VIEW OVERLAY -->
+        <div id="admin-view" class="absolute inset-0 bg-gray-50 z-50 hidden flex-col transform translate-y-full transition-transform duration-300">
+            <header class="bg-gray-900 text-white pt-10 pb-4 px-6 shadow-md shrink-0 flex justify-between items-center relative">
+                <h1 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Dasbor Admin</h1>
+                <button onclick="closeAdmin()" class="text-gray-300 hover:text-white bg-white/10 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Keluar</button>
+            </header>
+            
+            <div class="flex-1 overflow-y-auto p-5 pb-10">
+                <div class="flex gap-3 mb-6">
+                    <div class="flex-1 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <p class="text-xs text-gray-500 font-bold mb-1">Total Laporan</p>
+                        <h3 id="stat-total" class="text-2xl font-black text-bank-blue">0</h3>
+                    </div>
+                    <div class="flex-1 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <p class="text-xs text-gray-500 font-bold mb-1">Menunggu</p>
+                        <h3 id="stat-pending" class="text-2xl font-black text-orange-500">0</h3>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-gray-800 mb-3 text-sm">Daftar Laporan Masuk</h3>
+                <div id="admin-feed" class="space-y-3">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MODALS (Absolute within container) -->
+        <!-- Overlay -->
+        <div id="modal-overlay" class="absolute inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity flex items-center justify-center p-4 backdrop-blur-sm">
+            
+            <!-- PIN Modal -->
+            <div id="pin-modal" class="bg-white rounded-2xl w-full max-w-sm p-6 text-center transform scale-95 transition-transform hidden flex-col shadow-2xl relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <div class="w-16 h-16 bg-blue-100 text-bank-blue rounded-full flex items-center justify-center mb-4 text-2xl mx-auto">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Akses Admin</h3>
+                <p class="text-sm text-gray-600 mb-4">Masukkan PIN (1234) untuk masuk ke dasbor monitoring.</p>
+                <input type="password" id="admin-pin" placeholder="****" class="w-full text-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-lg tracking-widest focus:outline-none focus:border-bank-blue mb-4">
+                <p id="pin-error" class="text-alert-red text-xs mb-4 hidden">PIN salah. Silakan coba lagi.</p>
+                <button onclick="verifyPin()" class="w-full bg-bank-blue hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-colors">Masuk</button>
+            </div>
+
+            <!-- Cek Result Modal -->
+            <div id="cek-modal" class="bg-white rounded-2xl w-full max-w-sm p-6 text-center transform scale-95 transition-transform hidden flex-col items-center shadow-2xl relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <div id="cek-icon" class="w-20 h-20 rounded-full flex items-center justify-center mb-4 text-4xl"></div>
+                <h3 id="cek-title" class="text-xl font-bold mb-2"></h3>
+                <p id="cek-desc" class="text-sm text-gray-600 mb-6"></p>
+                <button onclick="closeModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 rounded-xl transition-colors">Tutup</button>
+            </div>
+
+            <!-- P3K Finansial Modal -->
+            <div id="p3k-modal" class="bg-white rounded-2xl w-full max-w-sm overflow-hidden transform scale-95 transition-transform hidden flex-col shadow-2xl">
+                <div class="bg-alert-red text-white p-5 flex justify-between items-center relative">
+                    <h3 class="font-bold text-lg flex items-center gap-2"><i class="fa-solid fa-truck-medical"></i> P3K Finansial</h3>
+                    <button onclick="closeModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div class="p-5 space-y-4">
+                    <p class="text-sm text-gray-600 mb-2">Jika Anda telanjur terkena scam/penipuan, lakukan 4 langkah darurat ini:</p>
+                    <ul class="space-y-3">
+                        <li class="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div class="w-8 h-8 rounded-full bg-red-100 text-alert-red flex items-center justify-center shrink-0 font-bold">1</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Jangan Panik</h4>
+                                <p class="text-xs text-gray-500">Tetap tenang agar bisa berpikir jernih.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div class="w-8 h-8 rounded-full bg-red-100 text-alert-red flex items-center justify-center shrink-0 font-bold">2</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Amankan Sisa Saldo</h4>
+                                <p class="text-xs text-gray-500">Segera pindahkan dana tersisa ke rekening aman atau blokir kartu.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div class="w-8 h-8 rounded-full bg-red-100 text-alert-red flex items-center justify-center shrink-0 font-bold">3</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Hubungi Call Center Bank</h4>
+                                <p class="text-xs text-gray-500">Laporkan transaksi ilegal ke nomor resmi bank (bukan dari Google).</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div class="w-8 h-8 rounded-full bg-red-100 text-alert-red flex items-center justify-center shrink-0 font-bold">4</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Lapor & Adukan</h4>
+                                <p class="text-xs text-gray-500">Buat laporan di Portal PeKA atau pihak kepolisian setempat.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Success Report Modal -->
+            <div id="success-modal" class="bg-white rounded-2xl w-full max-w-sm p-6 text-center transform scale-95 transition-transform hidden flex-col items-center shadow-2xl relative">
+                <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-4 text-4xl">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Laporan Berhasil Disimpan</h3>
+                <p class="text-sm text-gray-600 mb-6">Terima kasih atas kepedulian Anda. Laporan Anda telah masuk ke Radar PeKA dan akan ditindaklanjuti.</p>
+                <button onclick="closeModalAndGoRadar()" class="w-full bg-bank-blue hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-colors">Lihat di Radar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Mock Data for Radar Feed & Admin
+        let reportsData = [
+            { id: 2, merchant: "KOPI SENJA", indikasi: "Judi Online", date: "Hari ini, 10:30", color: "bg-red-50 text-red-600 border-red-100", icon: "fa-dice", status: 'pending' },
+            { id: 1, merchant: "TOKO MAJU", indikasi: "Penipuan", date: "Kemarin, 14:15", color: "bg-orange-50 text-orange-600 border-orange-100", icon: "fa-mask", status: 'verified' }
+        ];
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRadar();
+        });
+
+        // Tab Navigation Logic
+        function switchTab(tabId, btnElement) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            // Show selected tab
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            // Reset Nav buttons styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-bank-blue');
+                btn.classList.add('text-gray-400');
+            });
+            // Highlight active btn
+            if(btnElement) {
+                btnElement.classList.remove('text-gray-400');
+                btnElement.classList.add('text-bank-blue');
+            }
+        }
+
+        function forceTabNav(tabId, index) {
+            const buttons = document.querySelectorAll('.nav-btn');
+            switchTab(tabId, buttons[index]);
+        }
+
+        // Cek & Ricek Merchant Logic
+        function cekMerchant() {
+            const inputVal = document.getElementById('cek-input').value.trim().toLowerCase();
+            const keywords = ['coin88', 'pesugihan', 'judi'];
+            const isSuspicious = keywords.some(word => inputVal.includes(word));
+
+            const iconEl = document.getElementById('cek-icon');
+            const titleEl = document.getElementById('cek-title');
+            const descEl = document.getElementById('cek-desc');
+
+            if(inputVal === "") {
+                iconEl.className = "w-20 h-20 rounded-full flex items-center justify-center mb-4 text-4xl bg-gray-100 text-gray-500";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+                titleEl.className = "text-xl font-bold mb-2 text-gray-700";
+                titleEl.innerText = "Kolom Kosong";
+                descEl.innerText = "Silakan masukkan nama merchant terlebih dahulu sebelum mengecek.";
+                openModal('cek-modal');
+                return;
+            }
+
+            if (isSuspicious) {
+                // RED Alert
+                iconEl.className = "w-20 h-20 rounded-full flex items-center justify-center mb-4 text-4xl bg-red-100 text-alert-red animate-pulse";
+                iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                titleEl.className = "text-xl font-bold mb-2 text-alert-red";
+                titleEl.innerText = "Waspada! Indikasi Penipuan/Judol";
+                descEl.innerText = `Merchant "${inputVal.toUpperCase()}" terdeteksi memiliki rekam jejak mencurigakan di database PeKA. Kalau Ragu, Stop Dulu!`;
+            } else {
+                // GREEN Alert
+                iconEl.className = "w-20 h-20 rounded-full flex items-center justify-center mb-4 text-4xl bg-green-100 text-green-500";
+                iconEl.innerHTML = '<i class="fa-solid fa-shield-check"></i>';
+                titleEl.className = "text-xl font-bold mb-2 text-green-600";
+                titleEl.innerText = "Aman Sementara";
+                descEl.innerText = `Belum ada laporan mencurigakan untuk merchant "${inputVal.toUpperCase()}". Namun, tetap waspada dan simpan bukti transaksi Anda.`;
+            }
+
+            openModal('cek-modal');
+        }
+
+        // Modal Controls
+        function openModal(modalId) {
+            const overlay = document.getElementById('modal-overlay');
+            const modal = document.getElementById(modalId);
+            
+            // Hide all modals first
+            document.querySelectorAll('#modal-overlay > div').forEach(el => el.classList.add('hidden'));
+            
+            overlay.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            
+            // Trigger animation
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                modal.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.add('opacity-0');
+            document.querySelectorAll('#modal-overlay > div').forEach(el => el.classList.add('scale-95'));
+            
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300); // match transition duration
+        }
+
+        function closeModalAndGoRadar() {
+            closeModal();
+            setTimeout(() => {
+                forceTabNav('radar', 2);
+            }, 300);
+        }
+
+        // Report Form Logic
+        function submitReport(e) {
+            e.preventDefault();
+            
+            const merchant = document.getElementById('lapor-merchant').value.toUpperCase();
+            const indikasi = document.getElementById('lapor-kategori').value;
+            
+            let colorMap = "bg-gray-50 text-gray-600 border-gray-100";
+            let iconMap = "fa-circle-exclamation";
+
+            if(indikasi === "Judi Online") { colorMap = "bg-red-50 text-red-600 border-red-100"; iconMap = "fa-dice"; }
+            else if(indikasi === "Penipuan / Scam") { colorMap = "bg-orange-50 text-orange-600 border-orange-100"; iconMap = "fa-mask"; }
+            else if(indikasi === "Phishing") { colorMap = "bg-yellow-50 text-yellow-600 border-yellow-100"; iconMap = "fa-link"; }
+            
+            // Add new report to beginning of array
+            reportsData.unshift({
+                id: Date.now(),
+                merchant: merchant,
+                indikasi: indikasi,
+                date: "Baru saja",
+                color: colorMap,
+                icon: iconMap,
+                status: 'pending'
+            });
+
+            renderRadar();
+            
+            // Clear form
+            document.getElementById('lapor-form').reset();
+            
+            // Show Success Modal
+            openModal('success-modal');
+        }
+
+        // Render Radar Feed
+        function renderRadar() {
+            const feedContainer = document.getElementById('radar-feed');
+            feedContainer.innerHTML = '';
+
+            if (reportsData.length === 0) {
+                feedContainer.innerHTML = `<div class="text-center p-6 text-gray-400 text-sm">Belum ada laporan.</div>`;
+            }
+
+            reportsData.forEach((report) => {
+                const badge = report.status === 'verified' 
+                    ? `<span class="ml-2 text-[10px] text-green-600 bg-green-100 px-1.5 py-0.5 rounded flex items-center gap-1"><i class="fa-solid fa-check"></i> Terverifikasi</span>`
+                    : `<span class="ml-2 text-[10px] text-orange-500 bg-orange-100 px-1.5 py-0.5 rounded flex items-center gap-1"><i class="fa-solid fa-clock"></i> Diproses</span>`;
+
+                const card = `
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex gap-4 items-center transition-all">
+                        <div class="w-12 h-12 rounded-full ${report.color.split(' ')[0]} text-${report.color.split(' ')[1]} flex items-center justify-center shrink-0 text-xl border ${report.color.split(' ')[2]}">
+                            <i class="fa-solid ${report.icon}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-1">
+                                <h4 class="font-bold text-gray-800 text-sm truncate flex items-center">${report.merchant}</h4>
+                                <span class="text-[10px] text-gray-400 whitespace-nowrap ml-2">${report.date}</span>
+                            </div>
+                            <div class="flex items-center mt-1">
+                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${report.color}">
+                                    Indikasi: ${report.indikasi}
+                                </span>
+                                ${badge}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                feedContainer.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        // --- ADMIN LOGIC FUNCTIONS ---
+        function openAdminLogin() {
+            document.getElementById('admin-pin').value = '';
+            document.getElementById('pin-error').classList.add('hidden');
+            openModal('pin-modal');
+        }
+
+        function verifyPin() {
+            const pin = document.getElementById('admin-pin').value;
+            if (pin === '1234') {
+                closeModal();
+                const adminView = document.getElementById('admin-view');
+                adminView.classList.remove('hidden');
+                setTimeout(() => {
+                    adminView.classList.remove('translate-y-full');
+                }, 10);
+                renderAdminDashboard();
+            } else {
+                document.getElementById('pin-error').classList.remove('hidden');
+            }
+        }
+
+        function closeAdmin() {
+            const adminView = document.getElementById('admin-view');
+            adminView.classList.add('translate-y-full');
+            setTimeout(() => {
+                adminView.classList.add('hidden');
+            }, 300);
+            renderRadar();
+        }
+
+        function renderAdminDashboard() {
+            const feedContainer = document.getElementById('admin-feed');
+            feedContainer.innerHTML = '';
+            
+            let pendingCount = 0;
+
+            if (reportsData.length === 0) {
+                feedContainer.innerHTML = `<div class="text-center p-6 text-gray-400 text-sm">Belum ada laporan masuk.</div>`;
+            }
+
+            reportsData.forEach((report) => {
+                if (report.status === 'pending') pendingCount++;
+                
+                const actionButtons = report.status === 'pending' 
+                    ? `<button onclick="verifyReport(${report.id})" class="flex-1 bg-green-100 hover:bg-green-200 text-green-700 py-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-check mr-1"></i> Verifikasi</button>`
+                    : `<div class="flex-1 bg-gray-50 text-gray-400 py-2 rounded-lg text-xs font-bold text-center border border-gray-100"><i class="fa-solid fa-shield-check mr-1"></i> Terverifikasi</div>`;
+
+                const card = `
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm transition-all mb-3">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-sm">${report.merchant}</h4>
+                                <p class="text-[10px] text-gray-500">${report.date} &bull; ${report.indikasi}</p>
+                            </div>
+                            <span class="text-[10px] ${report.status === 'pending' ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600'} px-2 py-1 rounded-full font-bold">
+                                ${report.status === 'pending' ? 'Menunggu' : 'Selesai'}
+                            </span>
+                        </div>
+                        <div class="flex gap-2 mt-3 pt-3 border-t border-gray-50">
+                            ${actionButtons}
+                            <button onclick="deleteReport(${report.id})" class="flex-1 bg-red-50 hover:bg-red-100 text-alert-red py-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
+                        </div>
+                    </div>
+                `;
+                feedContainer.insertAdjacentHTML('beforeend', card);
+            });
+
+            document.getElementById('stat-total').innerText = reportsData.length;
+            document.getElementById('stat-pending').innerText = pendingCount;
+        }
+
+        function verifyReport(id) {
+            const reportIndex = reportsData.findIndex(r => r.id === id);
+            if(reportIndex !== -1) {
+                reportsData[reportIndex].status = 'verified';
+                renderAdminDashboard();
+                renderRadar(); // Sinkronisasi otomatis ke tampilan publik
+            }
+        }
+
+        function deleteReport(id) {
+            reportsData = reportsData.filter(r => r.id !== id);
+            renderAdminDashboard();
+            renderRadar(); // Sinkronisasi otomatis ke tampilan publik
+        }
+    </script>
+</body>
+</html>
